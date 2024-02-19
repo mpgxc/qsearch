@@ -48,13 +48,13 @@ export class UpdateBuilder<Content extends Record<string, any>> {
       .toString();
 
     const { ExpressionAttributeNames, ExpressionAttributeValues } =
-      buildExpressionAttributes(this.content);
-
-    ExpressionAttributeNames["#updated"] = this.updateAttrName;
-    ExpressionAttributeValues[":updated"] = new Date().toISOString();
+      buildExpressionAttributes({
+        ...this.content,
+        [this.updateAttrName]: new Date().toISOString(),
+      });
 
     return {
-      UpdateExpression: `SET ${UpdateExpression}, #updated = :updated`,
+      UpdateExpression: `SET ${UpdateExpression}`,
       ExpressionAttributeNames,
       ExpressionAttributeValues: marshall(ExpressionAttributeValues, {
         convertEmptyValues: true,
